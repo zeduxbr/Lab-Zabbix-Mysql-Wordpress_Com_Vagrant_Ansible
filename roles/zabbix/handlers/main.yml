@@ -1,0 +1,15 @@
+---
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+  become: yes
+
+- name: restart zabbix-server
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - zabbix-server
+    - zabbix-agent
+  become: yes    

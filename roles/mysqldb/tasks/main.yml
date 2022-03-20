@@ -1,0 +1,102 @@
+---
+- name: 'Instala pacotes de dependencia do sistema operacional'
+  apt:
+    update_cache: yes
+    name:
+    - mysql-server-8.0
+    - python3-mysqldb
+    - php7.4-mysql
+    state: latest
+  become: yes
+
+# Cria banco e usuario para uso do Wordpress
+- name: 'Cria o banco do Wordpress'
+  mysql_db:
+    name: "{{ wp_db_name }}"
+    state: present
+  become: yes
+
+- name: 'Cria usuario wordpress no mysql'
+  mysql_user:
+    name: "{{ wp_username }}"
+    password: "{{ wp_user_password }}"
+    priv: "{{ wp_db_name }}.*:ALL"
+    state: present
+    host: "{{ item }}"
+  with_items:
+    - "{{ wp_host_ip }}"
+  become: yes
+
+# Cria banco e usuario para uso do Zabbix
+- name: 'Cria o banco do Zabbix'
+  mysql_db:
+    name: "{{ zb_db_name }}"
+    encoding: utf8
+    collation: utf8_bin
+    state: present
+  become: yes
+
+- name: 'Cria usuario zabbix no mysql'
+  mysql_user:
+    name: "{{ zb_username }}"
+    password: "{{ zb_user_password }}"
+    priv: "{{ zb_db_name }}.*:ALL"
+    state: present
+    host: "{{ item }}"
+  with_items:
+    - "{{ zb_host_ip }}"
+  become: yes
+
+- name: 'Configura my.cnf para local'
+  copy:
+    src: 'files/mysqld.cnf'
+    dest: '/etc/mysql/mysql.conf.d/mysqld.cnf'
+    force: yes
+  become: yes
+  notify:
+    - restart mysql
+
+- name: 'Baixa o arquivo de repositorio do Zabbix'
+  get_url:
+    url: 'https://repo.zabbix.com/zabbix/5.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.4-1+ubuntu20.04_all.deb'
+    dest: '/tmp/zabbix-release_5.4-1+ubuntu20.04_all.deb'
+    mode: 0440
+  become: yes
+
+- name: 'Instala o arquivo de repositorio do Zabbix'
+  apt: 
+    deb: /tmp/zabbix-release_5.4-1+ubuntu20.04_all.deb
+  become: yes    
+
+
+- name: 'Instala pacotes de conexão e agente do zabbix no servidor'
+  apt:
+    update_cache: yes
+    name:
+      - zabbix-agent
+      - zabbix-sql-scripts
+    state: latest
+  become: yes
+
+- name: 'Copia o arquivo de schema para diretorio temporario'
+  copy:
+    src: /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz
+    dest: /tmp/create.sql.gz
+    remote_src: yes
+  become: yes
+
+- name: 'Descompacta script de criação de schema do Zabbix'
+  shell: gzip -f -d /tmp/create.sql.gz 
+  #state: import
+  become: yes
+  
+- name: 'Importa o Schema do Zabbix'
+  mysql_db:
+    name: "{{ zb_db_name }}"
+    state: import
+    target: /tmp/create.sql
+    force: yes
+  become: yes
+  notify:
+    - restart mysql
+

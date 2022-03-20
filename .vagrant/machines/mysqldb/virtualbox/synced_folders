@@ -1,0 +1,1 @@
+{"virtualbox":{"/configs":{"guestpath":"/configs","hostpath":"/home/melquis/Labs/configs","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/melquis/Labs","disabled":false,"__vagrantfile":true}}}

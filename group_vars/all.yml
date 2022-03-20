@@ -1,0 +1,17 @@
+---
+wp_db_name: wordpress_db
+wp_username: wordpress_user
+wp_user_password: 12345
+wp_installation_dir: '/var/www/wordpress'
+wp_hostname: wordpress
+
+zb_db_name: zabbix
+zb_username: zabbix
+zb_user_password: zabbix
+zb_config_dir: '/etc/zabbix'
+
+wp_host_ip: '192.168.0.33'
+db_host_ip: '192.168.0.34'
+zb_host_ip: '192.168.0.35'
+
+

@@ -1,0 +1,5 @@
+---
+wp_host_ip:
+zb_host_ip:
+- localhost
+- '127.0.0.1'

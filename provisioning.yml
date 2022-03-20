@@ -1,0 +1,12 @@
+---
+- hosts: mysqldb
+  roles:
+    - mysqldb
+
+- hosts: zabbix
+  roles:
+    - zabbix
+
+- hosts: wordpress
+  roles:
+    - wordpress

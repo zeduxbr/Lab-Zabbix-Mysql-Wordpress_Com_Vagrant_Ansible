@@ -1,0 +1,12 @@
+Log created: 2022-03-19T02:46:32.199069000Z
+Process ID:  3662 (0xe4e)
+Parent PID:  1 (0x1)
+Executable:  /usr/lib/virtualbox/VBoxHeadless
+Arg[0]: /usr/lib/virtualbox/VBoxHeadless
+Arg[1]: --comment
+Arg[2]: Labs_zabbix_1647639164418_12784
+Arg[3]: --startvm
+Arg[4]: 99e552ea-d98c-4424-9b8d-e8243cfd5ae8
+Arg[5]: --vrde
+Arg[6]: config
+AddRef: illegal refcnt=3221225469 state=2

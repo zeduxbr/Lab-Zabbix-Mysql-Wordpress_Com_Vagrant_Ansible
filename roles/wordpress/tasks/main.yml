@@ -1,0 +1,103 @@
+---
+- name: 'Instala pacotes de dependencia do sistema operacional'
+  apt:
+    update_cache: yes
+    name:
+    - php7.4
+    - apache2
+    - libapache2-mod-php7.4
+    - php7.4-gd
+    - php7.4-curl
+    - php7.4-mbstring
+    - php7.4-xml
+    - php7.4-xmlrpc
+    - php7.4-soap
+    - php7.4-intl
+    - php7.4-zip
+    - python3-mysqldb
+    - php7.4-mysql
+    - python3
+    - python3-pip 
+    state: latest
+  become: yes  
+
+- name: 'Baixa o arquivo de instalacao do Wordpress'
+  get_url:
+    url: 'https://wordpress.org/latest.tar.gz'
+    dest: '/tmp/wordpress.tar.gz'
+    mode: 0440
+  become: yes
+    
+- name: 'Descompacta o wordpress'
+  unarchive:
+    src: '/tmp/wordpress.tar.gz'
+    dest: /var/www/
+    remote_src: yes
+  become: yes
+
+- name: 'Copia wp-config-sample.php para wp-config.php'
+  copy:
+    src: "{{ wp_installation_dir }}/wp-config-sample.php"
+    dest: "{{ wp_installation_dir }}/wp-config.php"
+    remote_src: yes
+  become: yes
+
+- name: 'Configura o wp-config com as entradas do banco de dados'
+  replace:
+    path: "{{ wp_installation_dir }}/wp-config.php"
+    regexp: "{{ item.regex }}"
+    replace: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { regex: 'database_name_here', value: "{{ wp_db_name }}"}
+    - { regex: 'username_here', value: "{{ wp_username }}"}
+    - { regex: 'password_here', value: "{{ wp_user_password }}"}
+    - { regex: 'localhost', value: "{{ db_host_ip }}"}
+  become: yes
+
+- name: 'Configura Apache para servir Wordpress'
+  template:
+    src: 'templates/000-default.conf.j2'
+    dest: '/etc/apache2/sites-available/000-default.conf'
+  become: yes
+  notify:
+    - restart apache2
+
+- name: 'Baixa o arquivo de repositorio do Zabbix'
+  get_url:
+    url: 'https://repo.zabbix.com/zabbix/5.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.4-1+ubuntu20.04_all.deb'
+    dest: '/tmp/zabbix-release_5.4-1+ubuntu20.04_all.deb'
+    mode: 0440
+  become: yes
+
+- name: 'Instala o arquivo de repositorio do Zabbix'
+  apt: 
+    deb: /tmp/zabbix-release_5.4-1+ubuntu20.04_all.deb
+  become: yes    
+
+- name: 'Instala pacote do agente do zabbix no servidor'
+  apt:
+    update_cache: yes
+    name:
+      - zabbix-agent
+    state: latest
+  become: yes
+
+# - name: 'Seta o nome do host'
+#   ansible.builtin.hostname:
+#     name: "{{ wp_hostname }}"
+#     use: debian
+
+- name: 'Configura o arquivo zabbix-agentd.conf com as entradas de hostname'
+  replace:
+    path: "{{ zb_config_dir }}/zabbix_agentd.conf"
+    regexp: "{{ item.regex }}"
+    replace: "{{ item.value }}"
+    backup: yes
+  with_items:
+    - { regex: 'Zabbix server', value: "{{ wp_hostname }}"}
+    - { regex: '127.0.0.1', value: "{{ zb_host_ip }}"}
+  become: yes
+  notify:
+    - restart zabbix-agent
+

@@ -1,0 +1,8 @@
+[wordpress]
+192.168.0.33 ansible_user=vagrant ansible_ssh_private_key_file=/home/melquis/Labs/configs/id_rsa 
+
+[mysqldb]
+192.168.0.34 ansible_user=vagrant ansible_ssh_private_key_file=/home/melquis/Labs/configs/id_rsa
+
+[zabbix]
+192.168.0.35 ansible_user=vagrant ansible_ssh_private_key_file=/home/melquis/Labs/configs/id_rsa
