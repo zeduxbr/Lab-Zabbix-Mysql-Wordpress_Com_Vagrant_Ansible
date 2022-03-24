@@ -1,6 +1,24 @@
 # **Deploy: Zabbix + Mysql + Wordpress com Vagrant e Ansible.**
 <p>&nbsp;</p>
 
+- [**Deploy: Zabbix + Mysql + Wordpress com Vagrant e Ansible.**](#deploy-zabbix--mysql--wordpress-com-vagrant-e-ansible)
+  - [**Introdução**](#introdução)
+  - [**1. Passos iniciais do laboratório.**](#1-passos-iniciais-do-laboratório)
+  - [2. **Vagrant** - Provisionamento de máquinas virtuais.](#2-vagrant---provisionamento-de-máquinas-virtuais)
+  - [3. Configuração das máquinas virtuais com o **Ansible**.](#3-configuração-das-máquinas-virtuais-com-o-ansible)
+    - [3.1 - Servidor **mysqldb**](#31---servidor-mysqldb)
+    - [**3.2 - Servidor Zabbix**](#32---servidor-zabbix)
+    - [**3.3 - Servidor Wordpress**](#33---servidor-wordpress)
+    - [**3.4 - Definindo as variáveis do ambiente.**](#34---definindo-as-variáveis-do-ambiente)
+  - [**4 - Execução do ambiente de testes.**](#4---execução-do-ambiente-de-testes)
+    - [**4.1 - Executando o Ansible.**](#41---executando-o-ansible)
+    - [**4.2 - Verificando se o ambiente está no ar.**](#42---verificando-se-o-ambiente-está-no-ar)
+  - [**5 - Conclusão**](#5---conclusão)
+
+<p>&nbsp;</p>
+
+## **Introdução**
+
 O intuito deste artigo é ajudar a pessoas como eu que estão entrando no mundo DevOps a ter uma visão geral de como contruir um ambiente de laboratório, utilizando para provisão de maquinas virtuais o Vagrant e o Ansible para fazer a configuração deste ambiente.
 
 Deixo claro que a idéia deste artigo é mostrar o rápido deploy de um ambiente efemero para testes, o que é muito utilizado nesta área.
@@ -12,7 +30,7 @@ Para nosso laboratório, iremos criar uma pasta chamada “Laboratorio”, onde 
 Utilizarei como host deste laboratório o sistema operacional Linux.
 <p>&nbsp;</p>
 
-## 1. Passos iniciais do laboratório:
+## **1. Passos iniciais do laboratório.**
 
 * Crie a pasta local chamada **“Labs”**:
 
